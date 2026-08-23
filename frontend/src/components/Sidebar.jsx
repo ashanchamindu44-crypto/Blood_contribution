@@ -7,6 +7,7 @@ import {
   Bell, 
   FileText, 
   Droplet, 
+  HeartPulse,
   Server, 
   Settings,
   X
@@ -88,8 +89,8 @@ export default function Sidebar({
           <div className="sidebar-header">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div className="brand-wrapper">
-                <div className="brand-icon-box">
-                  <Droplet size={22} color="#ffffff" fill="#ffffff" />
+                <div className="brand-icon-box" style={{ background: 'linear-gradient(135deg, #ef4444 0%, #991b1b 100%)', boxShadow: '0 0 15px rgba(239, 68, 68, 0.45)', borderRadius: '12px' }}>
+                  <HeartPulse size={24} color="#ffffff" />
                 </div>
                 <div>
                   <div className="brand-title-text">BloodLink</div>
