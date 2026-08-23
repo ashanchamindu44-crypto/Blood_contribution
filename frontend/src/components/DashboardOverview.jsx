@@ -67,11 +67,11 @@ export default function DashboardOverview({
           </p>
         </div>
 
-        <div style={{ position: 'relative', zIndex: 2, display: 'flex', gap: '0.75rem' }}>
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <button className="btn btn-primary" onClick={() => setActiveTab('requests')}>
-            <HeartHandshake size={16} /> Submit Blood Request
+            <HeartHandshake size={16} /> Submit Request
           </button>
-          <button className="btn btn-secondary" style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#ffffff', borderColor: 'rgba(255,255,255,0.2)' }} onClick={() => setActiveTab('donors')}>
+          <button className="btn btn-secondary" style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: '#ffffff', borderColor: 'rgba(255,255,255,0.3)' }} onClick={() => setActiveTab('donors')}>
             <Users size={16} /> Register Donor
           </button>
         </div>
