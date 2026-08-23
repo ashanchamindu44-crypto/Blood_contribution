@@ -1,0 +1,14 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: notification-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/notification_db
+
+api:
+  key: ${API_SECURITY_KEY:blood_donation_secret_key_2026}
+  security:
+    key: ${API_SECURITY_KEY:blood_donation_secret_key_2026}

@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  request-db:
+    image: mongo:latest
+    container_name: request_db
+    ports:
+      - "27019:27017"
+    volumes:
+      - request_db_data:/data/db
+
+  request-service:
+    build: .
+    container_name: request_service
+    ports:
+      - "8084:8084"
+    environment:
+      - MONGO_URI=mongodb://request-db:27017/request_db
+      - API_KEY=${API_KEY:-blood_donation_secret_key_2026}
+      # If donor-service is started separately (its own docker-compose),
+      # keep this pointing at your machine/host so this container can reach it.
+      - DONOR_SERVICE_URL=${DONOR_SERVICE_URL:-http://host.docker.internal:8082}
+    depends_on:
+      - request-db
+
+volumes:
+  request_db_data:

@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  notification-db:
+    image: mongo:latest
+    container_name: notification_db
+    ports:
+      - "27020:27017"
+    volumes:
+      - notification_db_data:/data/db
+
+  notification-service:
+    build: .
+    container_name: notification_service
+    ports:
+      - "8085:8085"
+    environment:
+      - MONGO_URI=mongodb://notification-db:27017/notification_db
+      - API_KEY=${API_KEY:-my-secret-api-key-12345}
+      - NOTIFICATION_MOCK_MODE=${NOTIFICATION_MOCK_MODE:-true}
+      - SMS_PROVIDER=${SMS_PROVIDER:-mock}
+      - MAIL_HOST=${MAIL_HOST:-smtp.gmail.com}
+      - MAIL_PORT=${MAIL_PORT:-587}
+      - MAIL_USERNAME=${MAIL_USERNAME:-}
+      - MAIL_PASSWORD=${MAIL_PASSWORD:-}
+    depends_on:
+      - notification-db
+
+volumes:
+  notification_db_data:

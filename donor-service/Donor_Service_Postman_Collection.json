@@ -1,0 +1,219 @@
+{
+	"info": {
+		"_postman_id": "a9d8c7e6-1234-4567-89ab-cdef01234567",
+		"name": "Blood Donation System - Donor Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Register a new Donor",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-API-KEY",
+						"value": "{{api_key}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"johndoe@example.com\",\n    \"phone\": \"+94771234567\",\n    \"bloodType\": \"O+\",\n    \"location\": \"Colombo\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/donors",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"donors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Get all Donors",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-API-KEY",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/donors",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"donors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Get Donor by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-API-KEY",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/donors/{{donor_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"donors",
+						"{{donor_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Update Donor",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-API-KEY",
+						"value": "{{api_key}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"John Doe Updated\",\n    \"email\": \"johndoe@example.com\",\n    \"phone\": \"+94779876543\",\n    \"bloodType\": \"O+\",\n    \"location\": \"Kandy\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/donors/{{donor_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"donors",
+						"{{donor_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Check Eligibility",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-API-KEY",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/donors/{{donor_id}}/eligibility",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"donors",
+						"{{donor_id}}",
+						"eligibility"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. Record a Donation",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-API-KEY",
+						"value": "{{api_key}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"donationDate\": \"2026-08-10\",\n    \"unitsDonated\": 1,\n    \"location\": \"National Hospital Blood Bank\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/donors/{{donor_id}}/donate",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"donors",
+						"{{donor_id}}",
+						"donate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7. Get Donation History",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-API-KEY",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/donors/{{donor_id}}/history",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"donors",
+						"{{donor_id}}",
+						"history"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8082"
+		},
+		{
+			"key": "api_key",
+			"value": "my-secret-api-key-12345"
+		},
+		{
+			"key": "donor_id",
+			"value": "REPLACE_WITH_DONOR_ID"
+		}
+	]
+}

@@ -1,0 +1,634 @@
+{
+	"info": {
+		"_postman_id": "b789a123-c456-7890-abcd-ef0123456789",
+		"name": "BloodLink System Microservices (5 Branches)",
+		"description": "Comprehensive Postman API Collection with explicit http://localhost URLs for all 5 Microservices Branches.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "api_key",
+			"value": "blood_donation_secret_key_2026",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "donor_id",
+			"value": "USR-101",
+			"type": "string"
+		},
+		{
+			"key": "request_id",
+			"value": "REQ-501",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Branch 1: gateway (User & Auth Service - Port 8080)",
+			"item": [
+				{
+					"name": "1. Register User (POST /auth/register)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201 || pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.token) {",
+									"        pm.collectionVariables.set('jwt_token', jsonData.token);",
+									"    }",
+									"    if (jsonData.userId) {",
+									"        pm.collectionVariables.set('donor_id', jsonData.userId);",
+									"    }",
+									"    console.log('User registered in gateway_db successfully!');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"newdonor@blood.lk\",\n  \"password\": \"password123\",\n  \"fullName\": \"Nimal Silva\",\n  \"bloodGroup\": \"A+\",\n  \"city\": \"Kandy\",\n  \"phone\": \"+94 71 987 6543\",\n  \"role\": \"DONOR\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/register",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "2. Login User (POST /auth/login) - Auto Saves JWT Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.token) {",
+									"        pm.collectionVariables.set('jwt_token', jsonData.token);",
+									"        console.log('JWT Token auto-saved into Postman variable:', jsonData.token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"donor@blood.lk\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/login",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "3. Get User Profile (GET /auth/profile)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/auth/profile",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["auth", "profile"]
+						}
+					}
+				},
+				{
+					"name": "4. Validate JWT Token (GET /auth/validate)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/auth/validate",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["auth", "validate"]
+						}
+					}
+				},
+				{
+					"name": "5. Get User Audit Logs (GET /auth/logs)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/auth/logs",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["auth", "logs"]
+						}
+					}
+				},
+				{
+					"name": "6. Gateway Proxy -> Donors (GET /donors)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/donors",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["donors"]
+						}
+					}
+				},
+				{
+					"name": "7. Gateway Proxy -> Inventory (GET /inventory)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/inventory",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["inventory"]
+						}
+					}
+				},
+				{
+					"name": "8. Gateway Proxy -> Requests (GET /requests)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/requests",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["requests"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Branch 2: donor-service (Donor Service - Port 8081)",
+			"item": [
+				{
+					"name": "1. Get All Donors (GET /donors)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/donors",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["donors"]
+						}
+					}
+				},
+				{
+					"name": "2. Register New Donor (POST /donors)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201 || pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.id) {",
+									"        pm.collectionVariables.set('donor_id', jsonData.id);",
+									"        console.log('Saved to donor_db.donors! Donor ID:', jsonData.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Ruwan Wickramasinghe\",\n  \"email\": \"ruwan@gmail.com\",\n  \"phone\": \"+94 77 999 8877\",\n  \"bloodType\": \"O-\",\n  \"city\": \"Colombo\",\n  \"eligibilityStatus\": \"ELIGIBLE\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8081/donors",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["donors"]
+						}
+					}
+				},
+				{
+					"name": "3. Get Donor By ID (GET /donors/{{donor_id}})",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/donors/{{donor_id}}",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["donors", "{{donor_id}}"]
+						}
+					}
+				},
+				{
+					"name": "4. Check Donor Eligibility (GET /donors/{{donor_id}}/eligibility)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/donors/{{donor_id}}/eligibility",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["donors", "{{donor_id}}", "eligibility"]
+						}
+					}
+				},
+				{
+					"name": "5. Record New Donation (POST /donors/{{donor_id}}/donate)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"location\": \"National Blood Transfusion Service Colombo\",\n  \"units\": 1\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8081/donors/{{donor_id}}/donate",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["donors", "{{donor_id}}", "donate"]
+						}
+					}
+				},
+				{
+					"name": "6. Get Donation History (GET /donors/{{donor_id}}/history)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/donors/{{donor_id}}/history",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["donors", "{{donor_id}}", "history"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Branch 3: inventory-service (Blood Inventory Service - Port 8082)",
+			"item": [
+				{
+					"name": "1. Get All Stock Levels (GET /inventory)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/inventory",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8082",
+							"path": ["inventory"]
+						}
+					}
+				},
+				{
+					"name": "2. Get Stock For Blood Type O+ (GET /inventory/O+)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/inventory/O+",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8082",
+							"path": ["inventory", "O+"]
+						}
+					}
+				},
+				{
+					"name": "3. Update Stock Level (POST /inventory/update)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bloodType\": \"O-\",\n  \"amount\": 5\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8082/inventory/update",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8082",
+							"path": ["inventory", "update"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Branch 4: request-service (Request & Matching Service - Port 8083)",
+			"item": [
+				{
+					"name": "1. Get All Blood Requests (GET /requests)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/requests",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8083",
+							"path": ["requests"]
+						}
+					}
+				},
+				{
+					"name": "2. Submit Blood Request (POST /requests)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201 || pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.id) {",
+									"        pm.collectionVariables.set('request_id', jsonData.id);",
+									"        console.log('Saved to request_db.blood_requests! Request ID:', jsonData.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"recipientName\": \"Saman Kumara\",\n  \"bloodType\": \"O-\",\n  \"units\": 3,\n  \"urgency\": \"CRITICAL\",\n  \"hospital\": \"National Hospital Colombo\",\n  \"city\": \"Colombo\",\n  \"contact\": \"+94 71 222 3344\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8083/requests",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8083",
+							"path": ["requests"]
+						}
+					}
+				},
+				{
+					"name": "3. Match Donors For Request (POST /requests/match)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/requests/match?requestId={{request_id}}",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8083",
+							"path": ["requests", "match"],
+							"query": [
+								{
+									"key": "requestId",
+									"value": "{{request_id}}"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Branch 5: notification-service (Notification Service - Port 8084)",
+			"item": [
+				{
+					"name": "1. Get Notification Logs (GET /notify)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8084/notify",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8084",
+							"path": ["notify"]
+						}
+					}
+				},
+				{
+					"name": "2. Send Email Notification (POST /notify/email)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"recipientEmail\": \"donor@blood.lk\",\n  \"subject\": \"Urgent Blood Donation Alert\",\n  \"message\": \"Critical O- Blood required at National Hospital Colombo.\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8084/notify/email",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8084",
+							"path": ["notify", "email"]
+						}
+					}
+				},
+				{
+					"name": "3. Send SMS Alert (POST /notify/sms)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"recipientPhone\": \"+94771234567\",\n  \"message\": \"Urgent need of O- blood at National Hospital Colombo. Please contact hospital.\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8084/notify/sms",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8084",
+							"path": ["notify", "sms"]
+						}
+					}
+				},
+				{
+					"name": "4. Broadcast Alert (POST /notify/alerts)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"targetGroup\": \"O- Donors in Western Province\",\n  \"title\": \"Urgent Blood Alert\",\n  \"message\": \"Critical O- shortage at National Hospital Colombo.\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8084/notify/alerts",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8084",
+							"path": ["notify", "alerts"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "b7e4f1a2-5678-4abc-9def-123456789abc",
+		"name": "Blood Donation System - Inventory Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Get all Inventory",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-API-KEY",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/inventory",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"inventory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Get Inventory by Blood Type",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-API-KEY",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/inventory/{{blood_type}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"inventory",
+						"{{blood_type}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Update Stock (Add units)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-API-KEY",
+						"value": "{{api_key}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bloodType\": \"O-\",\n    \"amount\": 5,\n    \"timestamp\": \"2026-08-16T09:15:00Z\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/inventory/update",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"inventory",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Update Stock (Deduct units)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-API-KEY",
+						"value": "{{api_key}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bloodType\": \"O-\",\n    \"amount\": -2,\n    \"timestamp\": \"2026-08-16T09:20:00Z\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/inventory/update",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"inventory",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Reject request without API Key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/inventory",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"inventory"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8083"
+		},
+		{
+			"key": "api_key",
+			"value": "blood_donation_secret_key_2026"
+		},
+		{
+			"key": "blood_type",
+			"value": "O-"
+		}
+	]
+}
