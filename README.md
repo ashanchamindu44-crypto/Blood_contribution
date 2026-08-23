@@ -1,10 +1,10 @@
-# Blood Donation System (Microservices Architecture)
+# BloodLink System (Microservices Architecture)
 
-A complete, production-ready microservices-based Blood Donation System featuring an API Gateway, 5 individual Spring Boot microservices connected to MongoDB, a single-command Docker environment, a Postman collection, and a React Client Application.
+A complete, production-ready microservices-based Blood Donation Management System featuring an API Gateway, 5 individual Spring Boot microservices connected to MongoDB, a single-command Docker environment, a Postman collection, and a React Client Application ("BloodLink").
 
 ---
 
-## 👥 Member Role & Branch Assignment
+## 👥 Member Role & Branch Assignment Matrix
 
 | Student ID | Student Name | Role / Microservice | Branch | Port | Database | Responsibilities |
 |---|---|---|---|---|---|---|
@@ -13,7 +13,7 @@ A complete, production-ready microservices-based Blood Donation System featuring
 | **ITBNM-2313-0015** | **A.A.M Dilshara Dias** | **Blood Inventory Service** | `inventory-service` | `8082` | `inventory_db` | Blood stock levels by blood type, stock updates after donation. |
 | **ITBNM-2313-0088** | **Kaumini Sathsarani** | **Request & Matching Service** | `request-service` | `8083` | `request_db` | Recipient requests, donor-recipient matching based on blood type and city. |
 | **ITBNM-2313-0058** | **R.G Malsha Prabodinee** | **Notification Service** | `notification-service` | `8084` | `notification_db` | Email & SMS alerts for blood requests and donor matches. |
-| **-** | **All Members** | **React Client Frontend** | `client-app` | `5173` | - | Unified Dark-themed Glassmorphism UI connected to Gateway. |
+| **-** | **All Members** | **React Client Frontend (BloodLink)** | `client-app` | `5173` | - | Unified Light-themed Hospital & University Grade UI connected to Gateway. |
 
 ---
 
@@ -28,9 +28,9 @@ BLOOD-DONATION /
 ├── 📁 inventory-service/          # Blood Inventory Service (Port 8082)
 ├── 📁 request-service/            # Request & Matching Service (Port 8083)
 ├── 📁 notification-service/       # Notification Service (Port 8084)
-├── 📁 frontend/                   # React + Vite Frontend (Port 5173)
+├── 📁 frontend/                   # React + Vite Frontend - BloodLink UI (Port 5173)
 ├── 📄 docker-compose.yml          # Single-command Multi-Container Orchestration
-├── 📄 Blood_Donation_Postman_Collection.json # Importable Postman Collection
+├── 📄 Blood_Donation_Postman_Collection.json # Importable 5-Branch Postman Collection
 ├── 📄 start_system.ps1            # One-click startup script
 └── 📄 README.md                   # Complete Project Documentation
 ```
@@ -60,8 +60,6 @@ docker compose up --build
 
 ---
 
----
-
 ## 📖 Interactive Swagger UI & OpenAPI Documentation
 
 Every microservice in this ecosystem exposes an interactive **OpenAPI 3 / Swagger UI** console. You can test endpoints, view JSON schemas, and simulate requests directly from your browser.
@@ -88,18 +86,18 @@ Every microservice in this ecosystem exposes an interactive **OpenAPI 3 / Swagge
 
 ## 📮 Postman API Collection
 
-Import the included `Blood_Donation_Postman_Collection.json` into Postman (or use 1-click URL import with `http://localhost:8080/v3/api-docs`) to test all endpoints.
+Import the included `Blood_Donation_Postman_Collection.json` into Postman to test all endpoints organized across the 5 Branches.
 
-| Service | Sample Endpoint | Auth Header Required |
+| Service Branch | Sample Endpoint | Auth Header Required |
 |---|---|---|
-| Gateway | `POST /auth/register` | `X-API-KEY: blood_donation_secret_key_2026` |
-| Gateway | `POST /auth/login` | `X-API-KEY: blood_donation_secret_key_2026` |
-| Gateway | `GET /auth/profile` | `Authorization: Bearer <JWT_TOKEN>` |
-| Gateway | `GET /auth/logs` | `X-API-KEY: blood_donation_secret_key_2026` |
-| Donor Service | `GET /donors` | `X-API-KEY: blood_donation_secret_key_2026` |
-| Inventory Service | `GET /inventory` | `X-API-KEY: blood_donation_secret_key_2026` |
-| Request Service | `GET /requests` | `X-API-KEY: blood_donation_secret_key_2026` |
-| Notification Service | `POST /notify/email` | `X-API-KEY: blood_donation_secret_key_2026` |
+| Branch 1: Gateway | `POST /auth/register` | `X-API-KEY: blood_donation_secret_key_2026` |
+| Branch 1: Gateway | `POST /auth/login` | `X-API-KEY: blood_donation_secret_key_2026` |
+| Branch 1: Gateway | `GET /auth/profile` | `Authorization: Bearer <JWT_TOKEN>` |
+| Branch 1: Gateway | `GET /auth/logs` | `X-API-KEY: blood_donation_secret_key_2026` |
+| Branch 2: Donor Service | `GET /donors` | `X-API-KEY: blood_donation_secret_key_2026` |
+| Branch 3: Inventory Service | `GET /inventory` | `X-API-KEY: blood_donation_secret_key_2026` |
+| Branch 4: Request Service | `GET /requests` | `X-API-KEY: blood_donation_secret_key_2026` |
+| Branch 5: Notification Service | `POST /notify/email` | `X-API-KEY: blood_donation_secret_key_2026` |
 
 ---
 
@@ -119,4 +117,3 @@ Import the included `Blood_Donation_Postman_Collection.json` into Postman (or us
 - **Service-to-Service Security:** `X-API-KEY` internal secret enforced on all microservices.
 - **CORS:** Configured for cross-origin client app communication on port `5173`.
 - **Rate Limiting:** Prevents API abuse at Gateway level (60 req/min).
-
