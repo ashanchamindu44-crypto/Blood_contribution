@@ -141,8 +141,27 @@ export default function RequestMatching({ requests, setRequests, donors, onShowT
         </button>
       </div>
 
-      {/* Requests Table Card */}
-      <div className="table-card" style={{ marginBottom: '2rem' }}>
+      {/* Matching Results Panel */}
+      {activeRequestForMatch && matchingResults && (
+        <div className="card-panel" style={{ border: '1.5px solid var(--color-brand-border)', backgroundColor: 'var(--bg-surface)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-heading)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <Sparkles size={20} color="var(--color-brand-primary)" />
+                Matching Results for Request {activeRequestForMatch.id} ({activeRequestForMatch.recipientName} - {activeRequestForMatch.bloodType})
+              </h3>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                Powered by Request & Matching Microservice (`/requests/match`)
+              </div>
+            </div>
+
+            {activeRequestForMatch.status !== 'FULFILLED' && (
+              <button className="btn btn-primary" onClick={() => handleMarkFulfilled(activeRequestForMatch.id)}>
+                <CheckCircle2 size={15} /> Mark Request Fulfilled
+              </button>
+            )}
+
+ style={{ marginBottom: '2rem' }}>
         <div className="table-responsive">
           <table className="custom-table">
             <thead>
@@ -209,25 +228,6 @@ export default function RequestMatching({ requests, setRequests, donors, onShowT
         </div>
       </div>
 
-      {/* Matching Results Panel */}
-      {activeRequestForMatch && matchingResults && (
-        <div className="card-panel" style={{ border: '1.5px solid var(--color-brand-border)', backgroundColor: 'var(--bg-surface)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
-            <div>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-heading)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <Sparkles size={20} color="var(--color-brand-primary)" />
-                Matching Results for Request {activeRequestForMatch.id} ({activeRequestForMatch.recipientName} - {activeRequestForMatch.bloodType})
-              </h3>
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                Powered by Request & Matching Microservice (`/requests/match`)
-              </div>
-            </div>
-
-            {activeRequestForMatch.status !== 'FULFILLED' && (
-              <button className="btn btn-primary" onClick={() => handleMarkFulfilled(activeRequestForMatch.id)}>
-                <CheckCircle2 size={15} /> Mark Request Fulfilled
-              </button>
-            )}
           </div>
 
           <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
