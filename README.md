@@ -8,11 +8,11 @@ A complete, production-ready microservices-based Blood Donation Management Syste
 
 | Student ID | Student Name | Role / Microservice | Branch | Port | Database | Responsibilities |
 |---|---|---|---|---|---|---|
-| **ITBNM-2313-0073** | **Chanaka Sandaruwan** | **Gateway Lead (User & Auth Service)** | `gateway` | `8080` | `gateway_db` | User registration, OAuth 2.0 JWT authentication, rate limiting, Swagger UI. |
-| **ITBNM-2313-0082** | **Chamod Vimukthi** | **Donor Service** | `donor-service` | `8081` | `donor_db` | Donor records, history, eligibility checks, API Key authentication. |
-| **ITBNM-2313-0015** | **A.A.M Dilshara Dias** | **Blood Inventory Service** | `inventory-service` | `8082` | `inventory_db` | Blood stock levels by blood type, stock updates after donation. |
-| **ITBNM-2313-0088** | **Kaumini Sathsarani** | **Request & Matching Service** | `request-service` | `8083` | `request_db` | Recipient requests, donor-recipient matching based on blood type and city. |
-| **ITBNM-2313-0058** | **R.G Malsha Prabodinee** | **Notification Service** | `notification-service` | `8084` | `notification_db` | Email & SMS alerts for blood requests and donor matches. |
+| **ITBIN-2313-0099** | **Shakya Sangeeth** | **Gateway Lead (User & Auth Service)** | `gateway` | `8080` | `gateway_db` | User registration, OAuth 2.0 JWT authentication, rate limiting, Swagger UI. |
+| **ITBNM-2313-0072** | **Adeesha Akalanka** | **Donor Service** | `donor-service` | `8081` | `donor_db` | Donor records, history, eligibility checks, API Key authentication. |
+| **ITBNM-2313-0057** | **Vikum Probodya** | **Blood Inventory Service** | `inventory-service` | `8082` | `inventory_db` | Blood stock levels by blood type, stock updates after donation. |
+| **ITBNM-2313-0009** | **Ashan Chamidu** | **Request & Matching Service** | `request-service` | `8083` | `request_db` | Recipient requests, donor-recipient matching based on blood type and city. |
+| **ITBNM-2313-0077** | **Adeesha Omal** | **Notification Service** | `notification-service` | `8084` | `notification_db` | Email & SMS alerts for blood requests and donor matches. |
 | **-** | **All Members** | **React Client Frontend (BloodLink)** | `client-app` | `5173` | - | Unified Light-themed Hospital & University Grade UI connected to Gateway. |
 
 ---
