@@ -79,6 +79,11 @@ body {
   min-height: 100vh;
 }
 
+option {
+  color: #000000;
+  background-color: #ffffff;
+}
+
 /* Overall App Layout */
 .app-layout {
   display: flex;
