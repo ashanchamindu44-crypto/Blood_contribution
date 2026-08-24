@@ -1,0 +1,419 @@
+<html><head><meta charset="utf-8"><style>body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; } table { border-collapse: collapse; width: 100%; margin-bottom: 20px; } th, td { border: 1px solid #ddd; padding: 8px; text-align: left; } th { background-color: #f2f2f2; font-weight: bold; } h1, h2, h3 { color: #2c3e50; margin-top: 24px; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; } p, ul, ol { margin-bottom: 16px; } li { margin-bottom: 8px; }</style></head><body><h1>TECHNICAL PROJECT REPORT</h1>
+<h2>Coursework: Microservices-Based System Architecture</h2>
+<p><strong>Module:</strong> Service-Oriented Computing<br><strong>Assessment Type:</strong> Group Project (5 Students)<br><strong>Project Name:</strong> BloodLink - Distributed Microservices Blood Donation System<br><strong>Date:</strong> August 2026  </p>
+<hr>
+<h2>👥 Group Member Work Breakdown Matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Student ID</th>
+<th>Student Name</th>
+<th>Role / Microservice</th>
+<th>Assigned Branch</th>
+<th>Port</th>
+<th>Dedicated Database</th>
+<th>Key Responsibilities</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ITBIN-2313-0099</strong></td>
+<td><strong>Shakya Sangeeth</strong></td>
+<td><strong>Gateway Lead (User &amp; Auth Service)</strong></td>
+<td><code>gateway</code></td>
+<td><code>8080</code></td>
+<td><code>gateway_db</code></td>
+<td>User registration, OAuth 2.0 JWT token generation, API Gateway reverse proxy routing, Rate Limiting (60 req/min), CORS policy, System audit logging.</td>
+</tr>
+<tr>
+<td><strong>ITBNM-2313-0072</strong></td>
+<td><strong>Adeesha Akalanka</strong></td>
+<td><strong>Donor Service</strong></td>
+<td><code>donor-service</code></td>
+<td><code>8081</code></td>
+<td><code>donor_db</code></td>
+<td>Donor profile registry, eligibility status calculations, donation history logs, API Key verification (<code>X-API-KEY</code>).</td>
+</tr>
+<tr>
+<td><strong>ITBNM-2313-0057</strong></td>
+<td><strong>Vikum Probodya</strong></td>
+<td><strong>Blood Inventory Service</strong></td>
+<td><code>inventory-service</code></td>
+<td><code>8082</code></td>
+<td><code>inventory_db</code></td>
+<td>Real-time blood stock tracking across 8 blood groups (A+, A-, B+, B-, AB+, AB-, O+, O-), stock level updates post-donation, critical threshold alerts.</td>
+</tr>
+<tr>
+<td><strong>ITBNM-2313-0009</strong></td>
+<td><strong>Ashan Chamidu</strong></td>
+<td><strong>Request &amp; Matching Service</strong></td>
+<td><code>request-service</code></td>
+<td><code>8083</code></td>
+<td><code>request_db</code></td>
+<td>Hospital blood requests, automated donor-recipient matching engine based on blood compatibility matrix and geographic city proximity.</td>
+</tr>
+<tr>
+<td><strong>ITBNM-2313-0077</strong></td>
+<td><strong>Adeesha Omal</strong></td>
+<td><strong>Notification Service</strong></td>
+<td><code>notification-service</code></td>
+<td><code>8084</code></td>
+<td><code>notification_db</code></td>
+<td>Automated Email notification dispatch, SMS emergency alert simulator, broadcast alert logs for urgent blood shortages.</td>
+</tr>
+<tr>
+<td><strong>-</strong></td>
+<td><strong>All Team Members</strong></td>
+<td><strong>React Client Application (&quot;BloodLink&quot;)</strong></td>
+<td><code>client-app</code></td>
+<td><code>5173</code></td>
+<td>-</td>
+<td>Single unified dark-themed React frontend integrating all 5 microservices via API Gateway.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>1. System Architecture &amp; Design</h2>
+<h3>1.1 High-Level Architecture Overview</h3>
+<p>The <strong>BloodLink System</strong> is built on a decentralized, distributed <strong>Service-Oriented Architecture (SOA) / Microservices Pattern</strong>. The application decoupled monolithic functionality into 5 independent, domain-specific Spring Boot microservices backed by dedicated MongoDB databases (Database-per-Service pattern).</p>
+<pre><code>                      +----------------------------------+
+                      |  React Client App (&quot;BloodLink&quot;)  |
+                      |          (Port 5173)             |
+                      +----------------+-----------------+
+                                       |
+                                       | HTTP / REST (JWT Auth)
+                                       v
+                      +----------------+-----------------+
+                      |     Central API Gateway          |
+                      |   (User &amp; Auth Service)          |
+                      |          (Port 8080)             |
+                      +-------+---+----+---+-------------+
+                              |   |    |   |
+          +-------------------+   |    |   +--------------------+
+          |                       |    |                        |
+          v                       v    v                        v
++---------+--------+  +-----------+----+--+  +------------------+----+  +--------------------+----+
+|  Donor Service   |  | Inventory Service |  | Request-Matching Service|  | Notification Service    |
+|   (Port 8081)    |  |    (Port 8082)    |  |    (Port 8083)         |  |    (Port 8084)           |
++--------+---------+  +---------+---------+  +---------+----------------+  +---------+---------------+
+         |                      |                      |                           |
+         v                      v                      v                           v
++--------+---------+  +---------+---------+  +---------+----------------+  +---------+---------------+
+| MongoDB: donor_db|  |MongoDB:inventory_db| | MongoDB: request_db    |  |MongoDB: notification_db |
++------------------+  +-------------------+  +--------------------------+  +-------------------------+
+</code></pre>
+<h3>1.2 Inter-Service Communication Flow</h3>
+<ol>
+<li><strong>Client to Gateway:</strong> The React Frontend communicates exclusively with the <strong>API Gateway</strong> on port <code>8080</code>.</li>
+<li><strong>Authentication Flow:</strong> Requests to protected domain endpoints require an <code>Authorization: Bearer &lt;JWT_TOKEN&gt;</code> header.</li>
+<li><strong>Gateway Routing:</strong> The Gateway authenticates the JWT, checks Rate Limiting rules, and proxies the request to the appropriate downstream microservice (<code>/donors</code>, <code>/inventory</code>, <code>/requests</code>, <code>/notify</code>).</li>
+<li><strong>Service Security:</strong> Communication from Gateway to microservices includes an internal <code>X-API-KEY: blood_donation_secret_key_2026</code> header to prevent direct unauthorized access to downstream ports (8081–8084).</li>
+</ol>
+<hr>
+<h2>2. Microservice Breakdown &amp; API Design</h2>
+<h3>2.1 Branch 1: API Gateway &amp; User Auth Service (<code>api-gateway</code> - Port 8080)</h3>
+<ul>
+<li><strong>Lead Developer:</strong> Chanaka Sandaruwan (ITBNM-2313-0073)</li>
+<li><strong>Database:</strong> <code>gateway_db</code> (Collections: <code>users</code>, <code>login_logs</code>)</li>
+<li><strong>Key Responsibilities:</strong> OAuth 2.0 User Registration &amp; JWT Authentication, Rate Limiting Filter (60 req/min per IP), CORS configuration, Central API Reverse Proxy.</li>
+</ul>
+<h4>Endpoints Table:</h4>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint Path</th>
+<th>Description</th>
+<th>Access / Auth</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>POST</code></td>
+<td><code>/auth/register</code></td>
+<td>Register new Donor or Hospital user account</td>
+<td>Public / API Key</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/auth/login</code></td>
+<td>Authenticate credentials &amp; return OAuth 2.0 JWT Token</td>
+<td>Public / API Key</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/auth/profile</code></td>
+<td>Fetch authenticated user details</td>
+<td>Bearer JWT</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/auth/validate</code></td>
+<td>Validate token status</td>
+<td>Bearer JWT</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/auth/logs</code></td>
+<td>Fetch system audit logs</td>
+<td>API Key</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>2.2 Branch 2: Donor Service (<code>donor-service</code> - Port 8081)</h3>
+<ul>
+<li><strong>Lead Developer:</strong> Chamod Vimukthi (ITBNM-2313-0082)</li>
+<li><strong>Database:</strong> <code>donor_db</code> (Collections: <code>donors</code>, <code>donation_history</code>)</li>
+<li><strong>Key Responsibilities:</strong> Donor registry, eligibility criteria checking (56-day gap rule), donation record creation.</li>
+</ul>
+<h4>Endpoints Table:</h4>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint Path</th>
+<th>Description</th>
+<th>Access / Auth</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GET</code></td>
+<td><code>/donors</code></td>
+<td>Get all registered donors</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/donors</code></td>
+<td>Register a new donor profile</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/donors/{id}</code></td>
+<td>Get donor profile by ID</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/donors/{id}/eligibility</code></td>
+<td>Evaluate donor eligibility for donation</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/donors/{id}/donate</code></td>
+<td>Record a new blood donation</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/donors/{id}/history</code></td>
+<td>Get donation history logs for donor</td>
+<td>API Key</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>2.3 Branch 3: Blood Inventory Service (<code>inventory-service</code> - Port 8082)</h3>
+<ul>
+<li><strong>Lead Developer:</strong> A.A.M Dilshara Dias (ITBNM-2313-0015)</li>
+<li><strong>Database:</strong> <code>inventory_db</code> (Collection: <code>blood_inventory</code>)</li>
+<li><strong>Key Responsibilities:</strong> Stock tracking across 8 blood groups (A+, A-, B+, B-, AB+, AB-, O+, O-), threshold monitoring, stock increment post-donation.</li>
+</ul>
+<h4>Endpoints Table:</h4>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint Path</th>
+<th>Description</th>
+<th>Access / Auth</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GET</code></td>
+<td><code>/inventory</code></td>
+<td>Get stock capacity for all 8 blood groups</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/inventory/{bloodType}</code></td>
+<td>Get stock for specific blood type (e.g. O+)</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/inventory/update</code></td>
+<td>Update blood stock quantity</td>
+<td>API Key</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>2.4 Branch 4: Request &amp; Matching Service (<code>request-service</code> - Port 8083)</h3>
+<ul>
+<li><strong>Lead Developer:</strong> Kaumini Sathsarani (ITBNM-2313-0088)</li>
+<li><strong>Database:</strong> <code>request_db</code> (Collection: <code>blood_requests</code>)</li>
+<li><strong>Key Responsibilities:</strong> Manage hospital recipient requests (<code>CRITICAL</code>, <code>HIGH</code>, <code>NORMAL</code>), donor-recipient matching engine based on blood type compatibility and city proximity.</li>
+</ul>
+<h4>Endpoints Table:</h4>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint Path</th>
+<th>Description</th>
+<th>Access / Auth</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GET</code></td>
+<td><code>/requests</code></td>
+<td>Get all active blood requests</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/requests</code></td>
+<td>Submit a new blood request</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/requests/{id}</code></td>
+<td>Get request details by ID</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/requests/match</code></td>
+<td>Execute donor-recipient matching algorithm</td>
+<td>API Key</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>2.5 Branch 5: Notification Service (<code>notification-service</code> - Port 8084)</h3>
+<ul>
+<li><strong>Lead Developer:</strong> R.G Malsha Prabodinee (ITBNM-2313-0058)</li>
+<li><strong>Database:</strong> <code>notification_db</code> (Collection: <code>notifications</code>)</li>
+<li><strong>Key Responsibilities:</strong> Email notification dispatching, SMS emergency alert dispatching, broadcast alert logs.</li>
+</ul>
+<h4>Endpoints Table:</h4>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint Path</th>
+<th>Description</th>
+<th>Access / Auth</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GET</code></td>
+<td><code>/notify</code></td>
+<td>Get notification audit logs</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/notify/email</code></td>
+<td>Send automated email notification</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/notify/sms</code></td>
+<td>Send automated SMS alert</td>
+<td>API Key</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/notify/alerts</code></td>
+<td>Broadcast emergency alert</td>
+<td>API Key</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>3. Security &amp; Infrastructure</h2>
+<h3>3.1 OAuth 2.0 &amp; JWT Implementation</h3>
+<p>User authentication uses JSON Web Tokens (JJWT library <code>0.11.5</code>). Upon successful login at <code>POST /auth/login</code>, the API Gateway signs a JWT containing the user&#39;s <code>email</code>, <code>role</code>, <code>issuedAt</code>, and <code>expiration</code> timestamp (24-hour validity).</p>
+<h3>3.2 Service-to-Service API Key Verification</h3>
+<p>Every individual microservice implements a custom <code>ApiKeyAuthFilter.java</code> extending Spring&#39;s <code>OncePerRequestFilter</code>. Requests lacking the header <code>X-API-KEY: blood_donation_secret_key_2026</code> are rejected with HTTP Status <code>401 Unauthorized</code>.</p>
+<h3>3.3 Rate Limiting &amp; CORS</h3>
+<ul>
+<li><strong>Rate Limiting:</strong> <code>RateLimitingFilter.java</code> tracks request counts per IP address using a <code>ConcurrentHashMap</code> with atomic counters. Requests exceeding <strong>60 requests per minute</strong> receive an HTTP <code>429 Too Many Requests</code> response.</li>
+<li><strong>CORS:</strong> Configured in <code>SecurityConfig.java</code> to explicitly permit origin <code>http://localhost:5173</code> with standard REST methods (<code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>).</li>
+</ul>
+<hr>
+<h2>4. Containerization &amp; Deployment (Docker)</h2>
+<p>The system is fully containerized using Multi-Stage Dockerfiles and orchestrated via a root <code>docker-compose.yml</code> file.</p>
+<h3>4.1 Root Docker Compose Architecture</h3>
+<pre><code class="language-yaml">version: &#39;3.8&#39;
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: blood_donation_mongodb
+    ports:
+      - &quot;27017:27017&quot;
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api_gateway_service
+    ports:
+      - &quot;8080:8080&quot;
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/gateway_db
+
+  donor-service:
+    build: ./donor-service
+    container_name: donor_service
+    ports:
+      - &quot;8081:8081&quot;
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/donor_db
+
+  inventory-service:
+    build: ./inventory-service
+    container_name: inventory_service
+    ports:
+      - &quot;8082:8082&quot;
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/inventory_db
+
+  request-service:
+    build: ./request-service
+    container_name: request_service
+    ports:
+      - &quot;8083:8083&quot;
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/request_db
+
+  notification-service:
+    build: ./notification-service
+    container_name: notification_service
+    ports:
+      - &quot;8084:8084&quot;
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/notification_db
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_app
+    ports:
+      - &quot;5173:5173&quot;
+</code></pre>
+<hr>
+<h2>5. Client Application &amp; API Documentation</h2>
+<h3>5.1 Interactive Swagger UI Specs</h3>
+<p>Every microservice embeds <code>springdoc-openapi-starter-webmvc-ui</code> (OpenAPI 3.0):</p>
+<ul>
+<li><strong>Gateway Hub (Port 8080):</strong> <code>http://localhost:8080/swagger-ui.html</code></li>
+<li><strong>Donor Service (Port 8081):</strong> <code>http://localhost:8081/swagger-ui.html</code></li>
+<li><strong>Inventory Service (Port 8082):</strong> <code>http://localhost:8082/swagger-ui.html</code></li>
+<li><strong>Request Service (Port 8083):</strong> <code>http://localhost:8083/swagger-ui.html</code></li>
+<li><strong>Notification Service (Port 8084):</strong> <code>http://localhost:8084/swagger-ui.html</code></li>
+</ul>
+<h3>5.2 Postman API Collection</h3>
+<p>The repository includes <code>Blood_Donation_Postman_Collection.json</code> organized into 5 Microservice Branch folders with auto-saving test scripts for JWT tokens and resource IDs.</p>
+<hr>
+<h2>6. Conclusion</h2>
+<p>The <strong>BloodLink Microservices System</strong> successfully fulfills all technical guidelines, architectural standards, security protocols, containerization criteria, and unified client application integration required by the <strong>Service-Oriented Computing</strong> module specification.</p>
+</body></html>

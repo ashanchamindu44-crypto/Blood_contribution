@@ -11,11 +11,11 @@
 
 | Student ID | Student Name | Role / Microservice | Assigned Branch | Port | Dedicated Database | Key Responsibilities |
 |---|---|---|---|---|---|---|
-| **ITBNM-2313-0073** | **Chanaka Sandaruwan** | **Gateway Lead (User & Auth Service)** | `gateway` | `8080` | `gateway_db` | User registration, OAuth 2.0 JWT token generation, API Gateway reverse proxy routing, Rate Limiting (60 req/min), CORS policy, System audit logging. |
-| **ITBNM-2313-0082** | **Chamod Vimukthi** | **Donor Service** | `donor-service` | `8081` | `donor_db` | Donor profile registry, eligibility status calculations, donation history logs, API Key verification (`X-API-KEY`). |
-| **ITBNM-2313-0015** | **A.A.M Dilshara Dias** | **Blood Inventory Service** | `inventory-service` | `8082` | `inventory_db` | Real-time blood stock tracking across 8 blood groups (A+, A-, B+, B-, AB+, AB-, O+, O-), stock level updates post-donation, critical threshold alerts. |
-| **ITBNM-2313-0088** | **Kaumini Sathsarani** | **Request & Matching Service** | `request-service` | `8083` | `request_db` | Hospital blood requests, automated donor-recipient matching engine based on blood compatibility matrix and geographic city proximity. |
-| **ITBNM-2313-0058** | **R.G Malsha Prabodinee** | **Notification Service** | `notification-service` | `8084` | `notification_db` | Automated Email notification dispatch, SMS emergency alert simulator, broadcast alert logs for urgent blood shortages. |
+| **ITBIN-2313-0099** | **Shakya Sangeeth** | **Gateway Lead (User & Auth Service)** | `gateway` | `8080` | `gateway_db` | User registration, OAuth 2.0 JWT token generation, API Gateway reverse proxy routing, Rate Limiting (60 req/min), CORS policy, System audit logging. |
+| **ITBNM-2313-0072** | **Adeesha Akalanka** | **Donor Service** | `donor-service` | `8081` | `donor_db` | Donor profile registry, eligibility status calculations, donation history logs, API Key verification (`X-API-KEY`). |
+| **ITBNM-2313-0057** | **Vikum Probodya** | **Blood Inventory Service** | `inventory-service` | `8082` | `inventory_db` | Real-time blood stock tracking across 8 blood groups (A+, A-, B+, B-, AB+, AB-, O+, O-), stock level updates post-donation, critical threshold alerts. |
+| **ITBNM-2313-0009** | **Ashan Chamidu** | **Request & Matching Service** | `request-service` | `8083` | `request_db` | Hospital blood requests, automated donor-recipient matching engine based on blood compatibility matrix and geographic city proximity. |
+| **ITBNM-2313-0077** | **Adeesha Omal** | **Notification Service** | `notification-service` | `8084` | `notification_db` | Automated Email notification dispatch, SMS emergency alert simulator, broadcast alert logs for urgent blood shortages. |
 | **-** | **All Team Members** | **React Client Application ("BloodLink")** | `client-app` | `5173` | - | Single unified dark-themed React frontend integrating all 5 microservices via API Gateway. |
 
 ---
