@@ -34,3 +34,7 @@ Thumbs.db
 !.vscode/settings.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Word Temp Files
+~$*
+*.tmp
